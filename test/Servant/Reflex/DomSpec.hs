@@ -67,40 +67,38 @@ spec = do
       forM_ [1 .. 10] $ \ i -> do
         getFirstEvent (return . fmap (const i)) `shouldReturn` i
 
-  describe "xhrRequest" $ do
-    it "allows to query a server" $ withServer app $ \ port -> do
+  around (withServer app) $ describe "xhrRequest" $ do
+    it "allows to query a server" $ \ port -> do
       let a :<|> _ = client testApi (BaseUrl Http "localhost" port)
       r <- getFirstEvent a
       r `shouldBe` Right ([42], "a")
 
-    it "allows to send POST requests" $ withServer app $ \ port -> do
+    it "allows to send POST requests" $ \ port -> do
       let _ :<|> b :<|> _ = client testApi (BaseUrl Http "localhost" port)
       r <- getFirstEvent b
       r `shouldBe` Right "b"
 
-    it "allows to send request bodies" $ withServer app $ \ port -> do
+    it "allows to send request bodies" $ \ port -> do
       let _ :<|> _ :<|> c :<|> _ = client testApi (BaseUrl Http "localhost" port)
       r <- getFirstEvent $ \ tick -> c (fmap (const True) tick)
       r `shouldBe` Right True
 
-    it "allows captures" $ withServer app $ \ port -> do
+    it "allows captures" $ \ port -> do
       let _ :<|> _ :<|> _ :<|> d :<|> _ = client testApi (BaseUrl Http "localhost" port)
       r <- getFirstEvent $ \ tick -> d (fmap (const "foo") tick)
       r `shouldBe` Right "oof"
 
-    it "allows multiple inputs" $ withServer app $ \ port -> do
+    it "allows multiple inputs" $ \ port -> do
       let _ :<|> _ :<|> _ :<|> _ :<|> e :<|> _ = client testApi (BaseUrl Http "localhost" port)
       r <- getFirstEvent $ \ tick -> e (fmap (const ("foo", 7)) tick)
       r `shouldBe` Right (replicate 7 "foo")
 
-    it "allows QueryParams" $ withServer app $ \ port -> do
+    it "allows QueryParams" $ \ port -> do
       let _ :<|> _ :<|> _ :<|> _ :<|> _ :<|> f = client testApi (BaseUrl Http "localhost" port)
       r <- getFirstEvent $ \ tick -> f (fmap (const "bar") tick)
       r `shouldBe` Right "rab"
 
--- fixme: around or before
-
-    it "returns proper parse errors" $ do
+    it "returns proper parse errors" $ \ port -> do
       pending
 
 getFirstEvent :: (MonadWidget t SpiderM, MonadIO (PushM t)) =>
@@ -121,16 +119,3 @@ haltGui :: WebView -> IO ()
 haltGui wv = Gtk.postGUIAsync $ do
     w <- Gtk.widgetGetToplevel wv
     Gtk.widgetDestroy w
-
-ensureOnce :: Spec -> Spec
-ensureOnce spec = do
-  mvar <- runIO $ newMVar True
-  around (ensure mvar) spec
-  where
-    ensure mvar spec = modifyMVar_ mvar $ \ isFirst -> do
-      if isFirst
-        then do
-          spec ()
-        else do
-          throwIO $ ErrorCall "only run one at a time"
-      return False
