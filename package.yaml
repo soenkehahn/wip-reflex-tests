@@ -1,0 +1,36 @@
+ghc-options:
+  "-threaded"
+
+dependencies:
+  - aeson
+  - attoparsec
+  - base
+  - bytestring
+  - containers
+  - reflex
+  - reflex-dom
+  - servant
+  - servant-server
+  - string-conversions
+
+library:
+  source-dirs:
+    - src
+
+ghc-options:
+  "-threaded"
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - test
+      - src
+    dependencies:
+      - ghcjs-dom
+      - http-types
+      - hspec
+      - hspec-wai
+      - gtk3
+      - transformers
+      - wai

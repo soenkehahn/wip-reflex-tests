@@ -1,0 +1,57 @@
+-- This file has been generated from package.yaml by hpack version 0.5.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           servant-reflex-dom
+version:        0.0.0
+build-type:     Simple
+cabal-version:  >= 1.10
+
+library
+  hs-source-dirs:
+      src
+  ghc-options: -threaded
+  build-depends:
+      aeson
+    , attoparsec
+    , base
+    , bytestring
+    , containers
+    , reflex
+    , reflex-dom
+    , servant
+    , servant-server
+    , string-conversions
+  exposed-modules:
+      Servant.Reflex.Dom
+  default-language: Haskell2010
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+    , src
+  ghc-options: -threaded
+  build-depends:
+      aeson
+    , attoparsec
+    , base
+    , bytestring
+    , containers
+    , reflex
+    , reflex-dom
+    , servant
+    , servant-server
+    , string-conversions
+    , ghcjs-dom
+    , http-types
+    , hspec
+    , hspec-wai
+    , gtk3
+    , transformers
+    , wai
+  other-modules:
+      Servant.Reflex.DomSpec
+      Servant.Reflex.Dom
+  default-language: Haskell2010

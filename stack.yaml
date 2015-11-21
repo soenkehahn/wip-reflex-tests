@@ -1,0 +1,23 @@
+flags: {}
+
+packages:
+- location: ./.
+- location:
+    git: https://github.com/ryantrinkle/reflex
+    commit: 784f9f79396ae713a03fc4d81f8a67b75d6ade1c # need a few package bumps not present in hackage release yet
+  extra-dep: true
+- location: # ../reflex-dom
+    git: https://github.com/ryantrinkle/reflex-dom
+    commit: a60ae687cdc284a8eb3776fc95aa2adefc51e7ec # hamishmack-master (improved-base compatible)
+      # ddcc75b
+  extra-dep: true
+- location: ../hspec-wai
+
+resolver: lts-3.10
+
+extra-deps:
+  - ref-tf-0.4
+  - these-0.6.1.0
+  - ghcjs-dom-0.2.2.0 # improved-base compatible with (2015-10-01 ghcjs)
+  - webkitgtk3-0.14.1.0
+  - webkitgtk3-javascriptcore-0.13.1.0
